@@ -16,7 +16,6 @@
 //  ===========
 // Test bench under progress for Testing the design fifi and design module.
 ////////////////////////////////////////////////////////////////////////////////
-
 module tb();
   localparam FIFO_DEPTH = 8;
   localparam FIFO_WIDTH = 3;
@@ -122,17 +121,23 @@ module tb();
       rd_en = 0;
       wr_en = 0;
       wr_data = 0;
-      #30;
+      @(posedge clk);
+      @(posedge clk);
+      @(posedge clk);
       for(int i = 0 ;i<4;i++) begin
         dr_write_fifo(i);
         $display("PUSHING FIFO");
         fifo_q.push_front(i);
       end
+      wr_en <= 0 ;
       @(posedge clk);
       for(int i = 0 ;i<4;i++) begin
         dr_read_fifo();
         $display("Popping FIFO");
       end
+      rd_en <= 0 ;
+      @(posedge clk);
+      @(posedge clk);
       @(posedge clk);
       fork 
         begin 
@@ -141,11 +146,13 @@ module tb();
             $display("PUSHING FIFO");
             fifo_q.push_front(i);
           end
+          wr_en <= 0 ;
           @(posedge clk);
         end
         begin 
           for(int i = 0 ;i<100;i++) begin
             if(i == 50) begin
+              rd_en <= 0 ;
               for(int i =0;i<10;i++) @(posedge clk);
             end
             else begin 
@@ -153,6 +160,7 @@ module tb();
               $display("Popping FIFO");
             end
           end
+          rd_en <= 0 ;
           @(posedge clk);
         end
       join
@@ -175,23 +183,24 @@ module tb();
     end 
 
     task dr_read_fifo();
-      rd_en <= 0;
+      @(negedge clk);
       while(fifo_empty) begin 
+        rd_en <= 0;
         @(posedge clk);
       end 
       rd_en <= 1 ;
       @(posedge clk);
-      rd_en <= 0;
     endtask : dr_read_fifo
 
     task dr_write_fifo(input int data);
-      wr_en <= 0;
+      // #1;
+      @(negedge clk);
       while(fifo_full) begin 
+        wr_en <= 0;
         @(posedge clk);
       end 
       wr_en <= 1;
       wr_data <= data;
       @(posedge clk);
-      wr_en <= 0;
     endtask : dr_write_fifo
 endmodule 
