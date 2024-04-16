@@ -1,0 +1,4 @@
+rm -rf AN.DB  DVEfiles csrc inter.vpd novas.conf sim.log simv.daidir  simv ucli.key verdiLog core*
+vlogan -full64 -sverilog ./design.sv ./tb.sv  -timescale=1ns/1ps 
+vcs -full64 -top tb -debug_region=cell+lib +vcs+lic+wait -debug_all -debig_access+all -debug_access+r+driver +test_iteration=1 +test_control=0 +vcs+vcdpluson  -debug_acc+all+dmptf | tee sim.log
+./simv -gui=dve | tee sim.log
