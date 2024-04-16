@@ -14,6 +14,7 @@
 // This file contains the underdeveloping FIFO design and A simple processor design combined in single file
 ////////////////////////////////////////////////////////////////////////////////
 
+// Code your design here
 module design1 (
     input bit clk,
     input bit rst,
@@ -58,7 +59,7 @@ module design1 (
 endmodule
 
 
-module fifo #(    // THIS IS a parametrized FIFO
+module fifo #(
   parameter FIFO_DEPTH = 8,
   parameter FIFO_WIDTH = 3
 ) (
@@ -128,4 +129,5 @@ module fifo #(    // THIS IS a parametrized FIFO
     end
     else fifo_empty = 0;
   end 
+  
 endmodule
